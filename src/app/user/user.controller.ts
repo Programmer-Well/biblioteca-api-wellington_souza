@@ -2,7 +2,11 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from "@
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { Roles } from "src/decorators/roles.decorator";
+import { UserRole } from "@prisma/client";
 
+
+@Roles(UserRole.ADMIN, UserRole.COORDINATOR)
 @Controller('users')
 export class UserController {
     constructor(private readonly userService: UserService) { }

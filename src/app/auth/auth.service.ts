@@ -4,6 +4,7 @@ import { User } from '../user/entities/user.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from '../user/user.service';
 import { AuthRegisterDTO } from './dto/auth-register.dto';
+import { UserRole } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -18,21 +19,21 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  createToken(user: User) {
+  createToken(user: User) { 
+    const payload = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role, 
+    };
+
     return {
-      accessToken: this.jwtService.sign(
-        {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-        },
-        {
-          expiresIn: '7 days',
-          subject: String(user.id),
-          issuer: this.issuer,
-          audience: this.audience,
-        },
-      ),
+      accessToken: this.jwtService.sign(payload, {
+        expiresIn: '7 days',
+        subject: String(user.id),
+        issuer: this.issuer,
+        audience: this.audience,
+      }),
     };
   }
 
@@ -62,8 +63,7 @@ export class AuthService {
 
     const user = await this.prismaService.user.findFirst({
       where: {
-        email,
-        password
+        email,       
       },
     });
 
