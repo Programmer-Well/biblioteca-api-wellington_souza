@@ -1,26 +1,66 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+
 
 @Injectable()
 export class BooksService {
-  create(createBookDto: CreateBookDto) {
-    return 'This action adds a new book';
+
+  constructor(private prismaService: PrismaService) { }
+
+  async findAll() {
+
+    const books = await this.prismaService.book.findMany();
+
+    if (books.length === 0) {
+      throw new NotFoundException("Nenhum livro encontrado/cadastrado no banco!");
+    }
+
+    return books;
   }
 
-  findAll() {
-    return `This action returns all books`;
+  async findOne(id: number) {
+    const book = await this.prismaService.book.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!book) {
+      throw new NotFoundException(`O livro ${id} não foi encontrado.`)
+    }
+
+    return book;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} book`;
+  async create(createBookDto: CreateBookDto) {
+    return this.prismaService.book.create({
+      data: createBookDto,
+    });
   }
 
-  update(id: number, updateBookDto: UpdateBookDto) {
-    return `This action updates a #${id} book`;
+  async update(id: number, updateBookDto: UpdateBookDto) {
+    await this.findOne(id);
+
+    return this.prismaService.book.update({
+      data: updateBookDto,
+      where: {
+        id,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} book`;
+  async remove(id: number) {
+    await this.findOne(id);
+
+    return this.prismaService.book.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
+
+
+
