@@ -7,6 +7,7 @@ import { AuthModule } from './app/auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule} from '@nestjs/config';
 import { PrismaService } from './prisma/prisma.service';
+import { LoanModule } from './loan/loan.module';
 
 
 @Module({
@@ -23,6 +24,7 @@ import { PrismaService } from './prisma/prisma.service';
     forwardRef(() => UserModule),
     forwardRef(() => BooksModule),
     forwardRef(() => AuthModule),
+    LoanModule,
   ],
   controllers: [AppController],
   providers: [AppService],
