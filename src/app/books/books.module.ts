@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { BooksController } from './books.controller';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-    imports: [],
-    controllers: [BooksController],
-    providers: [BooksService, PrismaService],
-    exports: [BooksService],
+  imports: [AuthModule], // <-- Importa AuthModule para usar os guards
+  controllers: [BooksController],
+  providers: [BooksService], // <-- Sem PrismaService, Sem APP_GUARD
+  exports: [BooksService],
 })
-export class BooksModule { }
+export class BooksModule {}

@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { LoanService } from './loan.service';
 import { LoanController } from './loan.controller';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
+  imports: [AuthModule], 
   controllers: [LoanController],
   providers: [LoanService],
 })
