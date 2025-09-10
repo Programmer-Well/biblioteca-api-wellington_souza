@@ -1,8 +1,7 @@
 import { IsInt, IsNotEmpty } from 'class-validator';
 
-export class CreateLoanDto {
-  [x: string]: any;
+export class ReturnLoanDto {
   @IsInt()
   @IsNotEmpty()
-  bookId: number;
+  loanId: number;
 }
